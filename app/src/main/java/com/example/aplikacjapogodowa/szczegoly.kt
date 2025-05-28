@@ -61,7 +61,7 @@ class szczegoly : ComponentActivity() {
             val miasto = intent.getStringExtra("CITY_NAME") ?: ""
             //cityNameTextView.text = "$miasto"
 
-            pobierzKoordynaty(miasto)
+            pobierzPogode(miasto)
             dodajDoUlubionych(cityNameTextView.text.toString(), ulubione)
 
 
@@ -69,7 +69,7 @@ class szczegoly : ComponentActivity() {
         } else if (intent.getStringExtra("GPS") != null) {
             Toast.makeText(this, "Opcja z koordynatami", Toast.LENGTH_SHORT).show()
 
-            pobierzKoordynaty("")
+            pobierzPogode("")
             dodajDoUlubionych(cityNameTextView.text.toString(), ulubione)
         }
 
@@ -98,7 +98,7 @@ class szczegoly : ComponentActivity() {
         }
     }
 
-    fun pobierzPogodeDlaKoordynatow(city: String, latitude: String = "", longitude: String = ""): String? {
+    fun pobranieDanychZAPI(city: String, latitude: String = "", longitude: String = ""): String? {
 
         var urlString: String
 
@@ -138,7 +138,7 @@ class szczegoly : ComponentActivity() {
         }
     }
 
-    fun pobierzKoordynaty(city: String) {
+    fun pobierzPogode(city: String) {
         if (ContextCompat.checkSelfPermission(
                 this,
                 android.Manifest.permission.ACCESS_FINE_LOCATION
@@ -169,7 +169,7 @@ class szczegoly : ComponentActivity() {
                         ).show()
 
                         Thread {
-                            val weatherResult = pobierzPogodeDlaKoordynatow(city, latitude, longitude)
+                            val weatherResult = pobranieDanychZAPI(city, latitude, longitude)
 
                             runOnUiThread {
                                 try {
@@ -192,14 +192,14 @@ class szczegoly : ComponentActivity() {
 
 
                                 } catch (e: Exception) {
-                                    Log.e("WeatherAPI", "Failed to parse JSON: ${e.localizedMessage}")
+                                    Log.e("WeatherAPI", "Blad parsowania JSON: ${e.localizedMessage}")
                                     Toast.makeText(this@szczegoly, "Błąd podczas parsowania danych pogodowych", Toast.LENGTH_SHORT).show()
                                 }
                             }
                         }.start()
 
                     } else {
-                        Toast.makeText(this@szczegoly, "Location not available", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this@szczegoly, "Lokalizacja niedostepna", Toast.LENGTH_SHORT).show()
                     }
                     fusedLocationClient.removeLocationUpdates(this)
                 }
