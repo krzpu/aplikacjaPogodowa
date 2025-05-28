@@ -6,25 +6,58 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <TextView
+        android:id="@+id/titleTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Aplikacja Pogodowa"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:layout_marginBottom="16dp" />
+
     <EditText
         android:id="@+id/searchEditText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:autofillHints=""
         android:hint="Wpisz nazwę miasta"
+        android:gravity="center"
         tools:ignore="TextFields" />
 
-    <Button
-        android:id="@+id/searchButton"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Szukaj pogody"/>
+        android:orientation="horizontal"
+        android:gravity="center_horizontal"
+        android:layout_marginTop="8dp">
 
-    <Button
-        android:id="@+id/gpsButton"
-        android:layout_width="wrap_content"
+        <Button
+            android:id="@+id/searchButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Szukaj pogody"
+            android:backgroundTint="@android:color/holo_blue_light"/>
+
+        <Button
+            android:id="@+id/gpsButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Użyj lokalizacji GPS"
+            android:layout_marginStart="8dp"
+            android:backgroundTint="@android:color/holo_green_light"/>
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/favoritesTitleTextView"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Użyj lokalizacji GPS"/>
+        android:text="Lista ulubionych miast"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="8dp" />
 
     <ListView
         android:id="@+id/ulubioneListView"
