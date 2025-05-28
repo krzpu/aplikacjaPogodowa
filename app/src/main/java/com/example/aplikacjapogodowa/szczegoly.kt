@@ -48,7 +48,7 @@ class szczegoly : ComponentActivity() {
 
         // Pokazanie danych podczas ładowania
         runOnUiThread {
-            cityNameTextView.text = "Ładowanie danych pogodowych..."
+            cityNameTextView.text = "Ładowanie danych pogodowych dla miasta " + intent.getStringExtra("CITY_NAME")
             temperatureTextView.text = ""
             cloudTextView.text = ""
             rainTextView.text = ""
@@ -59,19 +59,18 @@ class szczegoly : ComponentActivity() {
             Toast.makeText(this, "Prognoza dla konkretnego miasta", Toast.LENGTH_SHORT).show()
 
             val miasto = intent.getStringExtra("CITY_NAME") ?: ""
-            cityNameTextView.text = "$miasto"
+            //cityNameTextView.text = "$miasto"
 
-            pobierzPogodeDlaKoordynatow(miasto)
-            // Ustaw tekst przycisku na start
-            updateFavoriteButton(miasto, ulubione)
+            pobierzKoordynaty(miasto)
+            dodajDoUlubionych(cityNameTextView.text.toString(), ulubione)
 
 
         // PROGNOZA POGODY PRZEZ GPS
         } else if (intent.getStringExtra("GPS") != null) {
             Toast.makeText(this, "Opcja z koordynatami", Toast.LENGTH_SHORT).show()
 
-            pobierzKoordynaty()
-            updateFavoriteButton(cityNameTextView.text.toString(), ulubione)
+            pobierzKoordynaty("")
+            dodajDoUlubionych(cityNameTextView.text.toString(), ulubione)
         }
 
         
@@ -87,11 +86,11 @@ class szczegoly : ComponentActivity() {
                 Toast.makeText(this, "$miasto usunięto z ulubionych", Toast.LENGTH_SHORT).show()
             }
             // Aktualizacja tekstu przycisku po akcji
-            updateFavoriteButton(cityNameTextView.text.toString(), ulubione)
+            dodajDoUlubionych(cityNameTextView.text.toString(), ulubione)
         }
     }
 
-    private fun updateFavoriteButton(miasto: String, ulubione: Ulubione) {
+    private fun dodajDoUlubionych(miasto: String, ulubione: Ulubione) {
         if (ulubione.czyJestUlubione(miasto)) {
             addToFavoritesButton.text = "Usuń z ulubionych"
         } else {
@@ -139,7 +138,7 @@ class szczegoly : ComponentActivity() {
         }
     }
 
-    fun pobierzKoordynaty() {
+    fun pobierzKoordynaty(city: String) {
         if (ContextCompat.checkSelfPermission(
                 this,
                 android.Manifest.permission.ACCESS_FINE_LOCATION
@@ -170,9 +169,7 @@ class szczegoly : ComponentActivity() {
                         ).show()
 
                         Thread {
-                            val weatherResult = pobierzPogodeDlaKoordynatow("", latitude, longitude)
-
-                            Log.d("WeatherAPI", "Received: $weatherResult")
+                            val weatherResult = pobierzPogodeDlaKoordynatow(city, latitude, longitude)
 
                             runOnUiThread {
                                 try {
