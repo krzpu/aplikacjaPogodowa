@@ -64,6 +64,8 @@ class szczegoly : ComponentActivity() {
         // Inicjalizacja obiektu Ulubione, gdybyśmy chcieli dodawać do ulubionych
         val ulubione = Ulubione(this)
 
+        var miasto : String
+
         // Pokazanie danych podczas ładowania
         runOnUiThread {
             cityNameTextView.text = "Ładowanie danych pogodowych"
@@ -76,16 +78,16 @@ class szczegoly : ComponentActivity() {
         if (intent.getStringExtra("CITY_NAME") != null && intent.getStringExtra("GPS") == null) {
             //Toast.makeText(this, "Prognoza dla konkretnego miasta", Toast.LENGTH_SHORT).show()
 
-            val miasto = intent.getStringExtra("CITY_NAME") ?: ""
+            miasto = intent.getStringExtra("CITY_NAME") ?: ""
             pobierzPogode(miasto)
-            dodajDoUlubionych(cityNameTextView.text.toString(), ulubione)
+            dodajDoUlubionych(miasto, ulubione)
 
         // PROGNOZA POGODY PRZEZ GPS
         } else if (intent.getStringExtra("GPS") != null) {
             //Toast.makeText(this, "Opcja z koordynatami", Toast.LENGTH_SHORT).show()
 
             pobierzPogode("")
-            dodajDoUlubionych(cityNameTextView.text.toString(), ulubione)
+            //dodajDoUlubionych(cityNameTextView.text.toString(), ulubione)
         }
 
         // Obsługa przycisku dodawania do ulubionych
@@ -221,6 +223,8 @@ class szczegoly : ComponentActivity() {
                                     wilgotnosc.text = "$humidity%"
                                     cityNameTextView.text = "$cityName"
 
+                                    //dodajDoUlubionych(cityNameTextView.text.toString(), ulubione)
+
                                     // Kolorowanie temperatury
                                     val color = when {
                                         temperature < 10 -> android.graphics.Color.BLUE
@@ -258,7 +262,6 @@ class szczegoly : ComponentActivity() {
                                 Toast.makeText(this@szczegoly, "Błąd podczas parsowania danych pogodowych", Toast.LENGTH_SHORT).show()
                             }
 
-
                         }.start()
 
                     } else {
@@ -273,6 +276,8 @@ class szczegoly : ComponentActivity() {
                 locationCallback,
                 mainLooper
             )
+
+
         }
     }
 }
