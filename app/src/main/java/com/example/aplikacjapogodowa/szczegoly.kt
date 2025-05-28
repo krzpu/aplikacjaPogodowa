@@ -1,9 +1,13 @@
 package com.example.aplikacjapogodowa
 
 import android.content.pm.PackageManager
+import android.graphics.BitmapFactory
+import android.graphics.drawable.AnimationDrawable
 import android.os.Bundle
 import android.util.Log
 import android.widget.Button
+import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.ComponentActivity
@@ -24,6 +28,7 @@ class szczegoly : ComponentActivity() {
     private lateinit var wilgotnosc: TextView
     private lateinit var addToFavoritesButton: Button
     private lateinit var cityNameTextView: TextView
+    private lateinit var weatherIconImageView: ImageView
 
     private lateinit var fusedLocationClient: FusedLocationProviderClient
 
@@ -36,6 +41,13 @@ class szczegoly : ComponentActivity() {
 
         setContentView(R.layout.activity_szczegoly)
 
+        // Ustawienie animacji tła
+        val layout = findViewById<LinearLayout>(R.id.detailLayout)
+        val animationDrawable = layout.background as AnimationDrawable
+        animationDrawable.setEnterFadeDuration(3000)
+        animationDrawable.setExitFadeDuration(3000)
+        animationDrawable.start()
+
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
 
         cityNameTextView = findViewById(R.id.cityNameTextView)
@@ -43,6 +55,7 @@ class szczegoly : ComponentActivity() {
         cloudTextView = findViewById(R.id.cloudTextView)
         wilgotnosc = findViewById(R.id.humidityTextView)
         addToFavoritesButton = findViewById(R.id.addToFavoritesButton)
+        weatherIconImageView = findViewById(R.id.weatherIconImageView)
 
         val ulubione = Ulubione(this)
 
@@ -176,13 +189,13 @@ class szczegoly : ComponentActivity() {
                                     val jsonResponse = JSONObject(weatherResult ?: "")
 
                                     val main = jsonResponse.getJSONObject("main")
+
                                     val temperature = main.getDouble("temp")
                                     val humidity = main.getInt("humidity")
-
                                     val weatherArray = jsonResponse.getJSONArray("weather")
                                     val weatherDescription = weatherArray.getJSONObject(0).getString("description")
-
                                     val cityName = jsonResponse.getString("name")
+
 
                                     // Aktualizacja widoków z danymi pogodowymi
                                     temperatureTextView.text = "$temperature°C"
@@ -197,13 +210,37 @@ class szczegoly : ComponentActivity() {
                                         else -> android.graphics.Color.RED
                                     }
                                     temperatureTextView.setTextColor(color)
-
-
                                 } catch (e: Exception) {
                                     Log.e("WeatherAPI", "Blad parsowania JSON: ${e.localizedMessage}")
                                     Toast.makeText(this@szczegoly, "Błąd podczas parsowania danych pogodowych", Toast.LENGTH_SHORT).show()
                                 }
                             }
+
+                        // Pobieranie ikony pogody
+                            try {
+                                val jsonResponse = JSONObject(weatherResult ?: "")
+                                val weatherArray = jsonResponse.getJSONArray("weather")
+                                val weatherIcon = weatherArray.getJSONObject(0).getString("icon")
+                                val iconUrl = "https://openweathermap.org/img/wn/${weatherIcon}@2x.png"
+
+                                // Pobieranie bitmapy i ustawianie obrazka
+                                Thread {
+                                    try {
+                                        val input = URL(iconUrl).openStream()
+                                        val bitmap = BitmapFactory.decodeStream(input)
+                                        runOnUiThread {
+                                            weatherIconImageView.setImageBitmap(bitmap)
+                                        }
+                                    } catch (e: Exception) {
+                                        e.printStackTrace()
+                                    }
+                                }.start()
+                            } catch (e: Exception) {
+                                Log.e("WeatherAPI", "Blad parsowania JSON: ${e.localizedMessage}")
+                                Toast.makeText(this@szczegoly, "Błąd podczas parsowania danych pogodowych", Toast.LENGTH_SHORT).show()
+                            }
+
+
                         }.start()
 
                     } else {

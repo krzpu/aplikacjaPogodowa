@@ -1,10 +1,12 @@
 package com.example.aplikacjapogodowa
 
 import android.content.Intent
+import android.graphics.drawable.AnimationDrawable
 import android.os.Bundle
 import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.EditText
+import android.widget.LinearLayout
 import android.widget.ListView
 import android.widget.Toast
 import androidx.activity.ComponentActivity
@@ -25,6 +27,13 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        // Ustawienie animacji tła
+        val layout = findViewById<LinearLayout>(R.id.rootLayout)
+        val animationDrawable = layout.background as AnimationDrawable
+        animationDrawable.setEnterFadeDuration(3000)
+        animationDrawable.setExitFadeDuration(3000)
+        animationDrawable.start()
 
         searchEditText    = findViewById(R.id.searchEditText)
         searchButton      = findViewById(R.id.searchButton)

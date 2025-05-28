@@ -3,7 +3,26 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="16dp"
-    android:gravity="bottom">
+    android:gravity="top"
+    android:background="@drawable/background_gradient"
+    android:id="@+id/detailLayout">
+
+    <TextView
+        android:id="@+id/cityNameTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="-"
+        android:textSize="28sp"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:layout_marginBottom="16dp"/>
+
+    <ImageView
+        android:id="@+id/weatherIconImageView"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:layout_gravity="center"
+        android:layout_marginTop="24dp" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -11,19 +30,7 @@
         android:orientation="horizontal"
         android:layout_marginTop="16dp">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Miasto:"
-            android:layout_marginEnd="8dp" />
 
-        <TextView
-            android:id="@+id/cityNameTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="-"
-            android:textSize="20sp"
-            android:textStyle="bold" />
     </LinearLayout>
 
     <LinearLayout
