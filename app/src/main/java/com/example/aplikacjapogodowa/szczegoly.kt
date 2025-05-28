@@ -21,7 +21,7 @@ class szczegoly : ComponentActivity() {
 
     private lateinit var temperatureTextView: TextView
     private lateinit var cloudTextView: TextView
-    private lateinit var rainTextView: TextView
+    private lateinit var wilgotnosc: TextView
     private lateinit var addToFavoritesButton: Button
     private lateinit var cityNameTextView: TextView
 
@@ -41,17 +41,17 @@ class szczegoly : ComponentActivity() {
         cityNameTextView = findViewById(R.id.cityNameTextView)
         temperatureTextView = findViewById(R.id.temperatureTextView)
         cloudTextView = findViewById(R.id.cloudTextView)
-        rainTextView = findViewById(R.id.rainTextView)
+        wilgotnosc = findViewById(R.id.humidityTextView)
         addToFavoritesButton = findViewById(R.id.addToFavoritesButton)
 
         val ulubione = Ulubione(this)
 
         // Pokazanie danych podczas ładowania
         runOnUiThread {
-            cityNameTextView.text = "Ładowanie danych pogodowych dla miasta " + intent.getStringExtra("CITY_NAME")
+            cityNameTextView.text = "Ładowanie danych pogodowych"
             temperatureTextView.text = ""
             cloudTextView.text = ""
-            rainTextView.text = ""
+            wilgotnosc.text = ""
         }
 
         // PROGNOZA POGODY DLA PRZEKAZANEGO MIASTA
@@ -187,7 +187,7 @@ class szczegoly : ComponentActivity() {
                                     // Aktualizacja widoków z danymi pogodowymi
                                     temperatureTextView.text = "$temperature°C"
                                     cloudTextView.text = "$weatherDescription"
-                                    rainTextView.text = "$humidity%"
+                                    wilgotnosc.text = "$humidity%"
                                     cityNameTextView.text = "$cityName"
 
                                     // Kolorowanie temperatury

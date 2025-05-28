@@ -2,7 +2,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="16dp">
+    android:padding="16dp"
+    android:gravity="bottom">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -14,14 +15,15 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Miasto:"
-            android:textStyle="bold"
             android:layout_marginEnd="8dp" />
 
         <TextView
             android:id="@+id/cityNameTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="-" />
+            android:text="-"
+            android:textSize="20sp"
+            android:textStyle="bold" />
     </LinearLayout>
 
     <LinearLayout
@@ -34,14 +36,16 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Temperatura:"
-            android:textStyle="bold"
+
             android:layout_marginEnd="8dp" />
 
         <TextView
             android:id="@+id/temperatureTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="-" />
+            android:text="-"
+            android:textSize="20sp"
+            android:textStyle="bold" />
     </LinearLayout>
 
     <LinearLayout
@@ -54,14 +58,15 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Zachmurzenie:"
-            android:textStyle="bold"
             android:layout_marginEnd="8dp" />
 
         <TextView
             android:id="@+id/cloudTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="-" />
+            android:text="-"
+            android:textSize="20sp"
+            android:textStyle="bold" />
     </LinearLayout>
 
     <LinearLayout
@@ -73,15 +78,16 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Opis:"
-            android:textStyle="bold"
+            android:text="Wilgotność:"
             android:layout_marginEnd="8dp" />
 
         <TextView
-            android:id="@+id/rainTextView"
+            android:id="@+id/humidityTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="-" />
+            android:text="-"
+            android:textSize="20sp"
+            android:textStyle="bold" />
     </LinearLayout>
 
     <Button
@@ -89,6 +95,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:text="Dodaj do ulubionych" />
+        android:text="Dodaj do ulubionych"
+        android:backgroundTint="@android:color/holo_blue_light"
+        android:layout_gravity="center"/>
 
 </LinearLayout>
