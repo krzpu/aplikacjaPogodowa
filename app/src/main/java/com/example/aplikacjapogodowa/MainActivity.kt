@@ -35,6 +35,7 @@ class MainActivity : ComponentActivity() {
         animationDrawable.setExitFadeDuration(3000)
         animationDrawable.start()
 
+        // przypisanie widoków do pól
         searchEditText    = findViewById(R.id.searchEditText)
         searchButton      = findViewById(R.id.searchButton)
         gpsButton         = findViewById(R.id.gpsButton)
@@ -46,11 +47,13 @@ class MainActivity : ComponentActivity() {
         favoritesAdapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, mutableListOf())
         listaUlubionych.adapter = favoritesAdapter
 
+        // Przejście do szczegółów po kliknięciu na element listy
         listaUlubionych.setOnItemClickListener { _, _, position, _ ->
             val miasto = favoritesAdapter.getItem(position) ?: return@setOnItemClickListener
             otworzSzczegoly(miasto)
         }
 
+        // Przejście do szczegółów po wpisaniu nazwy miasta
         searchButton.setOnClickListener {
             val miasto = searchEditText.text.toString().trim()
             if (miasto.isNotEmpty()) {
@@ -60,17 +63,20 @@ class MainActivity : ComponentActivity() {
             }
         }
 
+        // Przycisk GPS do otwarcia szczegółów bez wpisywania miasta
         gpsButton.setOnClickListener {
             otworzSzczegoly()
         }
     }
 
+    // Aktywność jest wznawiana, gdy wracamy do niej z innej aktywnośc
     override fun onResume() {
         super.onResume()
         // Za każdym razem, gdy wracamy do tego ekranu, odświeżamy listę ulubionych
         zaladujUlubione()
     }
 
+    // Metoda do załadowania ulubionych miast z klasy Ulubione
     private fun zaladujUlubione() {
         val lista = ulubione.getUlubione().toList()
         favoritesAdapter.clear()
@@ -78,12 +84,14 @@ class MainActivity : ComponentActivity() {
         favoritesAdapter.notifyDataSetChanged()
     }
 
+    //
     private fun otworzSzczegoly(miasto: String) {
         val intent = Intent(this, szczegoly::class.java)
         intent.putExtra("CITY_NAME", miasto)
         startActivity(intent)
     }
 
+    // Metoda do otwarcia szczegółów bez podawania nazwy miasta - przez GPS
     private fun otworzSzczegoly() {
         val intent = Intent(this, szczegoly::class.java)
         intent.putExtra("GPS", "")

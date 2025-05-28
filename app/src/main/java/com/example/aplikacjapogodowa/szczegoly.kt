@@ -23,6 +23,7 @@ import java.net.URL
 
 class szczegoly : ComponentActivity() {
 
+    // Deklaracja pól dla widoków
     private lateinit var temperatureTextView: TextView
     private lateinit var cloudTextView: TextView
     private lateinit var wilgotnosc: TextView
@@ -34,6 +35,7 @@ class szczegoly : ComponentActivity() {
 
     private val LOCATION_PERMISSION_REQUEST_CODE = 1001
 
+    // Klucz API do OpenWeatherMap
     private val apiKey: String = "e459e860dbcea1223df189b4fdd78ace"
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -48,8 +50,10 @@ class szczegoly : ComponentActivity() {
         animationDrawable.setExitFadeDuration(3000)
         animationDrawable.start()
 
+        // Inicjalizacja FusedLocationProviderClient
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
 
+        // Przypisanie widoków do pól
         cityNameTextView = findViewById(R.id.cityNameTextView)
         temperatureTextView = findViewById(R.id.temperatureTextView)
         cloudTextView = findViewById(R.id.cloudTextView)
@@ -57,6 +61,7 @@ class szczegoly : ComponentActivity() {
         addToFavoritesButton = findViewById(R.id.addToFavoritesButton)
         weatherIconImageView = findViewById(R.id.weatherIconImageView)
 
+        // Inicjalizacja obiektu Ulubione, gdybyśmy chcieli dodawać do ulubionych
         val ulubione = Ulubione(this)
 
         // Pokazanie danych podczas ładowania
@@ -69,24 +74,21 @@ class szczegoly : ComponentActivity() {
 
         // PROGNOZA POGODY DLA PRZEKAZANEGO MIASTA
         if (intent.getStringExtra("CITY_NAME") != null && intent.getStringExtra("GPS") == null) {
-            Toast.makeText(this, "Prognoza dla konkretnego miasta", Toast.LENGTH_SHORT).show()
+            //Toast.makeText(this, "Prognoza dla konkretnego miasta", Toast.LENGTH_SHORT).show()
 
             val miasto = intent.getStringExtra("CITY_NAME") ?: ""
-            //cityNameTextView.text = "$miasto"
-
             pobierzPogode(miasto)
             dodajDoUlubionych(cityNameTextView.text.toString(), ulubione)
 
-
         // PROGNOZA POGODY PRZEZ GPS
         } else if (intent.getStringExtra("GPS") != null) {
-            Toast.makeText(this, "Opcja z koordynatami", Toast.LENGTH_SHORT).show()
+            //Toast.makeText(this, "Opcja z koordynatami", Toast.LENGTH_SHORT).show()
 
             pobierzPogode("")
             dodajDoUlubionych(cityNameTextView.text.toString(), ulubione)
         }
 
-        
+        // Obsługa przycisku dodawania do ulubionych
         addToFavoritesButton.setOnClickListener {
 
             val miasto = cityNameTextView.text.toString()
@@ -103,6 +105,7 @@ class szczegoly : ComponentActivity() {
         }
     }
 
+    // Funkcja do aktualizacji tekstu przycisku w zależności od tego, czy miasto jest ulubione
     private fun dodajDoUlubionych(miasto: String, ulubione: Ulubione) {
         if (ulubione.czyJestUlubione(miasto)) {
             addToFavoritesButton.text = "Usuń z ulubionych"
@@ -111,16 +114,19 @@ class szczegoly : ComponentActivity() {
         }
     }
 
+    // Funkcja do pobierania danych pogodowych z API OpenWeatherMap
     fun pobranieDanychZAPI(city: String, latitude: String = "", longitude: String = ""): String? {
 
         var urlString: String
 
+        // Sprawdzenie, czy podano miasto, jeśli nie, używamy koordynatów podanych jako argumenty
         if (city == ""){
             urlString = "https://api.openweathermap.org/data/2.5/weather?lat=$latitude&lon=$longitude&units=metric&lang=pl&appid=$apiKey"
         } else {
             urlString = "https://api.openweathermap.org/data/2.5/weather?q=$city&units=metric&lang=pl&appid=$apiKey"
         }
 
+        // Wywołanie funkcji do pobrania danych z API
         return try {
             val url = URL(urlString)
             val connection = url.openConnection() as HttpURLConnection
@@ -151,7 +157,10 @@ class szczegoly : ComponentActivity() {
         }
     }
 
+    // Funkcja do pobierania pogody na podstawie miasta lub koordynatów GPS
     fun pobierzPogode(city: String) {
+
+        // Sprawdzenie czy aplikacja ma uprawnienia do lokalizacji
         if (ContextCompat.checkSelfPermission(
                 this,
                 android.Manifest.permission.ACCESS_FINE_LOCATION
@@ -162,30 +171,39 @@ class szczegoly : ComponentActivity() {
                 arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION),
                 LOCATION_PERMISSION_REQUEST_CODE
             )
-        } else {
+        }
+        // Jeśli uprawnienia są przyznane, pobieramy lokalizację
+        else {
             val locationRequest = com.google.android.gms.location.LocationRequest
                 .Builder(1000)
                 .setPriority(com.google.android.gms.location.Priority.PRIORITY_HIGH_ACCURACY)
                 .setMaxUpdates(1)
                 .build()
 
+            // Callback do obsługi wyników lokalizacji (szerokość i długość geograficzna)
             val locationCallback = object : com.google.android.gms.location.LocationCallback() {
                 override fun onLocationResult(locationResult: com.google.android.gms.location.LocationResult) {
                     val location = locationResult.lastLocation
                     if (location != null) {
                         val latitude = location.latitude.toString()
                         val longitude = location.longitude.toString()
-                        Toast.makeText(
-                            this@szczegoly,
-                            "Lat: $latitude, Lon: $longitude",
-                            Toast.LENGTH_LONG
-                        ).show()
+//                        Toast.makeText(
+//                            this@szczegoly,
+//                            "Lat: $latitude, Lon: $longitude",
+//                            Toast.LENGTH_LONG
+//                        ).show()
 
+                        // Nowy wątek na którym pobieramy dane pogodowe
                         Thread {
+
+                            // wywołujemy funkcję do pobrania danych z API
                             val weatherResult = pobranieDanychZAPI(city, latitude, longitude)
 
+                            // Uzupełnianie dancyh pogodowych w widokach
                             runOnUiThread {
                                 try {
+
+                                    // Parsowanie JSON-a i wyciąganie danych pogodowych
                                     val jsonResponse = JSONObject(weatherResult ?: "")
 
                                     val main = jsonResponse.getJSONObject("main")
@@ -216,7 +234,7 @@ class szczegoly : ComponentActivity() {
                                 }
                             }
 
-                        // Pobieranie ikony pogody
+                            // Pobieranie ikony pogody
                             try {
                                 val jsonResponse = JSONObject(weatherResult ?: "")
                                 val weatherArray = jsonResponse.getJSONArray("weather")
