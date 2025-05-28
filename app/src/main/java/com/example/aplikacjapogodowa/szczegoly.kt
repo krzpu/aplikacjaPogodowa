@@ -190,6 +190,14 @@ class szczegoly : ComponentActivity() {
                                     rainTextView.text = "$humidity%"
                                     cityNameTextView.text = "$cityName"
 
+                                    // Kolorowanie temperatury
+                                    val color = when {
+                                        temperature < 10 -> android.graphics.Color.BLUE
+                                        temperature in 10.0..20.0 -> android.graphics.Color.BLACK
+                                        else -> android.graphics.Color.RED
+                                    }
+                                    temperatureTextView.setTextColor(color)
+
 
                                 } catch (e: Exception) {
                                     Log.e("WeatherAPI", "Blad parsowania JSON: ${e.localizedMessage}")
