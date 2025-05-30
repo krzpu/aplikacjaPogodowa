@@ -1,1 +1,2 @@
-# aplikacjaPogodowa
+# Aplikacja Pogodowa Android
+
